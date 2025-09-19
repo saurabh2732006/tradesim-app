@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { usePathname } from 'next/navigation';
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function AppSidebar() {
   const { logout } = useAuth();
@@ -58,20 +59,23 @@ export function AppSidebar() {
         ))}
       </SidebarMenu>
       <SidebarFooter>
-        <SidebarMenu>
-           <SidebarMenuItem>
-            <SidebarMenuButton onClick={logout} >
-              <LogOut />
-              Logout
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton href="https://github.com/firebase/studio-templates" target="_blank">
-              <Github />
-              GitHub
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center justify-between p-2">
+          <ThemeToggle />
+           <SidebarMenu>
+            <SidebarMenuItem>
+                <SidebarMenuButton href="https://github.com/firebase/studio-templates" target="_blank">
+                <Github />
+                GitHub
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <SidebarMenuButton onClick={logout} >
+                <LogOut />
+                Logout
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+           </SidebarMenu>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
