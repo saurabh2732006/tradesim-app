@@ -81,6 +81,9 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         newHistory[newHistory.length-1] = newHistoryPoint;
         return { ...prev, history: newHistory };
       }
+      if (prev.history.length < 30) {
+        return { ...prev, history: [...prev.history, newHistoryPoint]};
+      }
       return { ...prev, history: [...prev.history, newHistoryPoint].slice(-30)};
     });
 

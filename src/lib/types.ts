@@ -1,10 +1,12 @@
+import { FC } from 'react';
+
 export interface Stock {
   ticker: string;
   name: string;
   price: number;
   change: number;
   changePercent: number;
-  logo: React.ComponentType<{ className?: string }>;
+  logo: FC<{ className?: string }>;
 }
 
 export interface Holding {
