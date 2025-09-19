@@ -26,14 +26,16 @@ export function NewsFeed() {
           <div className="space-y-6">
             {news.map((article) => (
               <div key={article.id} className="flex gap-4">
-                <Image
-                  src={article.imageUrl}
-                  alt={article.headline}
-                  width={100}
-                  height={100}
-                  className="rounded-md object-cover"
-                  data-ai-hint={article.imageHint}
-                />
+                <div className="relative h-[100px] w-[100px] flex-shrink-0">
+                  <Image
+                    src={article.imageUrl}
+                    alt={article.headline}
+                    fill
+                    sizes="100px"
+                    className="rounded-md object-cover"
+                    data-ai-hint={article.imageHint}
+                  />
+                </div>
                 <div className="flex flex-col">
                   <p className="text-xs text-muted-foreground">{article.source} &middot; {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}</p>
                   <a href="#" className="font-semibold text-sm hover:underline">
