@@ -15,9 +15,27 @@ import {
   Newspaper,
   Github,
   AreaChart,
+  Target,
+  ListOrdered,
+  User,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
+import { usePathname } from 'next/navigation';
 
 export function AppSidebar() {
+  const { logout } = useAuth();
+  const pathname = usePathname();
+
+  const menuItems = [
+    { href: "/", icon: LayoutDashboard, label: "Dashboard" },
+    { href: "/watchlist", icon: Target, label: "Watchlist" },
+    { href: "/positions", icon: Wallet, label: "Positions" },
+    { href: "/orders", icon: ListOrdered, label: "Orders" },
+    { href: "/account", icon: User, label: "Account" },
+    { href: "/news", icon: Newspaper, label: "News" },
+  ];
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -30,27 +48,23 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
       <SidebarMenu className="flex-1">
-        <SidebarMenuItem>
-          <SidebarMenuButton href="#" isActive>
-            <LayoutDashboard />
-            Dashboard
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton href="#">
-            <Wallet />
-            Portfolio
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton href="#">
-            <Newspaper />
-            News
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        {menuItems.map((item) => (
+          <SidebarMenuItem key={item.href}>
+            <SidebarMenuButton href={item.href} isActive={pathname === item.href}>
+              <item.icon />
+              {item.label}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
       </SidebarMenu>
       <SidebarFooter>
         <SidebarMenu>
+           <SidebarMenuItem>
+            <SidebarMenuButton onClick={logout} >
+              <LogOut />
+              Logout
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton href="https://github.com/firebase/studio-templates" target="_blank">
               <Github />

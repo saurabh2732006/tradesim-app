@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { PortfolioProvider } from '@/context/portfolio-context';
 import { AppLayout } from '@/components/layout/app-layout';
+import { AuthProvider } from '@/context/auth-context';
 
 export const metadata: Metadata = {
   title: 'TradeSim',
@@ -23,10 +24,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <PortfolioProvider>
-          <AppLayout>{children}</AppLayout>
-          <Toaster />
-        </PortfolioProvider>
+        <AuthProvider>
+          <PortfolioProvider>
+            <AppLayout>{children}</AppLayout>
+            <Toaster />
+          </PortfolioProvider>
+        </AuthProvider>
       </body>
     </html>
   );
