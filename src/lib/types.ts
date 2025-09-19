@@ -7,6 +7,7 @@ export interface Stock {
   change: number;
   changePercent: number;
   logo: FC<{ className?: string }>;
+  history: { time: string; value: number }[];
 }
 
 export interface Holding {

@@ -23,9 +23,25 @@ interface PortfolioContextType {
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
+// Helper to generate initial history for a stock
+const generateStockHistory = (price: number) => {
+  const now = new Date();
+  return Array.from({ length: 30 }, (_, i) => {
+    const date = new Date(now);
+    date.setDate(now.getDate() - (29 - i));
+    // Simulate some historical volatility
+    const value = price * (1 + (Math.sin(i / 3) * 0.05) + (Math.random() - 0.5) * 0.02);
+    return { time: date.toISOString().slice(0, 10), value: parseFloat(value.toFixed(2)) };
+  });
+};
+
+
 export function PortfolioProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
-  const [stocks, setStocks] = useState<Stock[]>(initialStocks);
+  const [stocks, setStocks] = useState<Stock[]>(() => initialStocks.map(stock => ({
+    ...stock,
+    history: generateStockHistory(stock.price),
+  })));
   const [portfolio, setPortfolio] = useState<PortfolioData>(initialPortfolio);
   const news = initialNews;
 
@@ -51,13 +67,32 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       setStocks(prevStocks =>
         prevStocks.map(stock => {
           // Fluctuate by up to 1.5%
-          const change = (Math.random() - 0.5) * (stock.price * 0.03); 
+          const changePercent = (Math.random() - 0.5) * 0.03;
+          const change = stock.price * changePercent;
           const newPrice = Math.max(0.01, stock.price + change);
+          
+          const newHistoryPoint = {
+             time: new Date().toISOString().slice(0, 10),
+             value: newPrice
+          };
+
+          const newHistory = [...(stock.history || [])];
+          const lastEntry = newHistory[newHistory.length-1];
+
+          // If the last entry is for the same day, update it. Otherwise, add a new one.
+          if (lastEntry && lastEntry.time === newHistoryPoint.time) {
+            newHistory[newHistory.length-1] = newHistoryPoint;
+          } else {
+             newHistory.push(newHistoryPoint);
+          }
+
+
           return {
             ...stock,
             price: newPrice,
-            change: newPrice - stock.price,
-            changePercent: ((newPrice - stock.price) / stock.price) * 100,
+            change: newPrice - (stock.history?.slice(-1)[0]?.value ?? stock.price),
+            changePercent: ((newPrice - (stock.history?.slice(-1)[0]?.value ?? stock.price)) / (stock.history?.slice(-1)[0]?.value ?? stock.price)) * 100,
+            history: newHistory.slice(-30) // Keep last 30 days
           };
         })
       );

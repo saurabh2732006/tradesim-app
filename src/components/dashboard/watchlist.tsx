@@ -20,6 +20,7 @@ import { usePortfolio } from "@/context/portfolio-context";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { StockSparkline } from "./stock-sparkline";
 
 export function Watchlist() {
   const { stocks, setSelectedStock, setTradeDialogOpen, setTradeType } = usePortfolio();
@@ -47,6 +48,7 @@ export function Watchlist() {
                 <TableHead>Asset</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Change</TableHead>
+                <TableHead>Chart</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -73,6 +75,9 @@ export function Watchlist() {
                         {isGain ? '+' : ''}{formatCurrency(stock.change)}
                       </div>
                       <div className="text-xs">({isGain ? '+' : ''}{formatPercent(stock.changePercent)})</div>
+                    </TableCell>
+                    <TableCell>
+                      <StockSparkline stock={stock} />
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" onClick={() => handleTradeClick(stock.ticker)}>
