@@ -67,7 +67,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       setStocks(prevStocks =>
         prevStocks.map(stock => {
           // Fluctuate by up to 1.5%
-          const changePercent = (Math.random() - 0.5) * 0.03;
+          const changePercent = (Math.random() - 0.5) * 0.015; // Reduced volatility
           const change = stock.price * changePercent;
           const newPrice = Math.max(0.01, stock.price + change);
           
