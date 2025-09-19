@@ -50,7 +50,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     const interval = setInterval(() => {
       setStocks(prevStocks =>
         prevStocks.map(stock => {
-          const change = (Math.random() - 0.5) * (stock.price * 0.01); // Fluctuate by up to 1%
+          // Fluctuate by up to 1.5%
+          const change = (Math.random() - 0.5) * (stock.price * 0.03); 
           const newPrice = Math.max(0.01, stock.price + change);
           return {
             ...stock,
@@ -60,7 +61,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
           };
         })
       );
-    }, 5000); // Update prices every 5 seconds
+    }, 2000); // Update prices every 2 seconds
 
     return () => clearInterval(interval);
   }, []);
