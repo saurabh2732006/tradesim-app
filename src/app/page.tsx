@@ -8,10 +8,10 @@ import { TradeDialog } from "@/components/trade-dialog";
 export default function Home() {
   return (
     <>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 animate-fade-in-up">
         <PortfolioOverview />
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5 animate-fade-in-up animation-delay-200">
         <div className="lg:col-span-3">
           <PortfolioChart />
         </div>
@@ -19,7 +19,7 @@ export default function Home() {
           <HoldingsTable />
         </div>
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3 animate-fade-in-up animation-delay-400">
         <div className="xl:col-span-2">
           <Watchlist />
         </div>
