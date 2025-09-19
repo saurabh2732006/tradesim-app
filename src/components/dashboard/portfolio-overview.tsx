@@ -12,7 +12,7 @@ export function PortfolioOverview() {
 
   const portfolioValue = useMemo(calculatePortfolioValue, [calculatePortfolioValue]);
 
-  const yesterdayValue = portfolio.history.length > 1 ? portfolio.history[portfolio.history.length - 2].value : portfolioValue;
+  const yesterdayValue = portfolio.history.length > 1 ? portfolio.history[portfolio.history.length - 2].value : (portfolio.history[0]?.value || portfolioValue);
   const todaysChange = portfolioValue - yesterdayValue;
   const todaysChangePercent = yesterdayValue !== 0 ? (todaysChange / yesterdayValue) * 100 : 0;
   
