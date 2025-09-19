@@ -70,6 +70,7 @@ export const initialPortfolio: PortfolioData = {
     const value = 100000 + Math.sin(i / 5) * 5000 + Math.random() * 2500 - 1250;
     return { time: date.toISOString().slice(0, 10), value: parseFloat(value.toFixed(2)) };
   }),
+  transactions: [],
 };
 
 export const initialNews: NewsArticle[] = [

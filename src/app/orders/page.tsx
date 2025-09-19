@@ -22,19 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function OrdersPage() {
   const { portfolio } = usePortfolio();
-
-  // In a real app, orders would be stored separately.
-  // For this simulation, we'll display a message.
-  const orders = portfolio.history.slice(-10).map((h, i) => ({
-      id: `ORD${12345 - i}`,
-      ticker: portfolio.holdings[i % portfolio.holdings.length]?.ticker || initialStocks[i % initialStocks.length].ticker,
-      type: Math.random() > 0.5 ? 'buy' : 'sell',
-      shares: Math.floor(Math.random() * 50) + 1,
-      price: h.value / (100 + i),
-      status: 'Filled',
-      date: h.time
-  })).reverse();
-
+  const orders = portfolio.transactions;
 
   return (
     <div className="space-y-6">
@@ -44,11 +32,11 @@ export default function OrdersPage() {
       </header>
       <Card>
         <CardHeader>
-          <CardTitle>Recent Orders</CardTitle>
-          <CardDescription>Your last 10 transactions.</CardDescription>
+          <CardTitle>All Transactions</CardTitle>
+          <CardDescription>A complete log of your buy and sell orders.</CardDescription>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-96">
+          <ScrollArea className="h-[60vh]">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -58,7 +46,7 @@ export default function OrdersPage() {
                   <TableHead>Type</TableHead>
                   <TableHead>Shares</TableHead>
                   <TableHead>Price</TableHead>
-                  <TableHead className="text-right">Status</TableHead>
+                  <TableHead className="text-right">Total Value</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -71,7 +59,7 @@ export default function OrdersPage() {
                 ) : (
                  orders.map((order) => (
                     <TableRow key={order.id}>
-                      <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                      <TableCell>{new Date(order.date).toLocaleString()}</TableCell>
                       <TableCell className="font-mono">{order.id}</TableCell>
                       <TableCell className="font-medium">{order.ticker}</TableCell>
                       <TableCell>
@@ -79,8 +67,8 @@ export default function OrdersPage() {
                       </TableCell>
                       <TableCell>{order.shares}</TableCell>
                       <TableCell>{formatCurrency(order.price)}</TableCell>
-                      <TableCell className="text-right">
-                         <Badge variant="secondary">{order.status}</Badge>
+                      <TableCell className="text-right font-medium">
+                         {formatCurrency(order.price * order.shares)}
                       </TableCell>
                     </TableRow>
                   ))
@@ -93,11 +81,3 @@ export default function OrdersPage() {
     </div>
   );
 }
-// We need this for the mock orders data
-const initialStocks = [
-  { ticker: 'RELIANCE', name: 'Reliance Industries' },
-  { ticker: 'TCS', name: 'Tata Consultancy' },
-  { ticker: 'HDFCBANK', name: 'HDFC Bank' },
-  { ticker: 'INFY', name: 'Infosys' },
-  { ticker: 'ICICIBANK', name: 'ICICI Bank' },
-];

@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { initialStocks, initialPortfolio, initialNews } from '@/lib/data';
-import type { Stock, PortfolioData, Holding, NewsArticle, TradeType, CapitalAllocationStrategy } from '@/lib/types';
+import type { Stock, PortfolioData, Holding, NewsArticle, TradeType, Transaction } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 
 interface PortfolioContextType {
@@ -86,6 +86,19 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
 
   }, [stocks, calculatePortfolioValue]);
 
+  const addTransaction = (transaction: Omit<Transaction, 'id' | 'date'>) => {
+    const newTransaction: Transaction = {
+      ...transaction,
+      id: `ORD${Date.now()}`,
+      date: new Date().toISOString(),
+    };
+
+    setPortfolio(prev => ({
+      ...prev,
+      transactions: [newTransaction, ...prev.transactions],
+    }));
+  };
+
   const buyStock = (ticker: string, shares: number, price: number) => {
     const cost = shares * price;
     if (portfolio.cash < cost) {
@@ -113,6 +126,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         holdings: newHoldings,
       };
     });
+    addTransaction({ ticker, shares, price, type: 'buy' });
     toast({ title: "Trade Executed", description: `Successfully bought ${shares} share(s) of ${ticker}.` });
   };
 
@@ -139,6 +153,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         holdings: newHoldings,
       };
     });
+    addTransaction({ ticker, shares, price, type: 'sell' });
     toast({ title: "Trade Executed", description: `Successfully sold ${shares} share(s) of ${ticker}.` });
   };
 

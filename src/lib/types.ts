@@ -18,10 +18,20 @@ export interface PortfolioHistoryPoint {
   value: number;
 }
 
+export interface Transaction {
+  id: string;
+  ticker: string;
+  type: 'buy' | 'sell';
+  shares: number;
+  price: number;
+  date: string; // ISO string
+}
+
 export interface PortfolioData {
   cash: number;
   holdings: Holding[];
   history: PortfolioHistoryPoint[];
+  transactions: Transaction[];
 }
 
 export interface NewsArticle {
