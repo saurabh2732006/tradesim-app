@@ -54,7 +54,8 @@ export function CandlestickChart({ data }: CandlestickChartProps) {
       wickUpColor: "hsl(var(--chart-2))",
     });
 
-    candlestickSeries.setData(data);
+    const sortedData = [...data].sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    candlestickSeries.setData(sortedData);
 
     chart.timeScale().fitContent();
 

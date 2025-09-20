@@ -115,13 +115,13 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const lastPortfolioCandle = portfolio.history[portfolio.history.length - 1];
     if (!lastPortfolioCandle) return;
-
+  
     const portfolioValue = calculatePortfolioValue();
     const open = lastPortfolioCandle.close;
     const close = portfolioValue;
     const high = Math.max(open, close) * (1 + Math.random() * 0.001);
     const low = Math.min(open, close) * (1 - Math.random() * 0.001);
-
+  
     const newHistoryPoint: CandlestickData = {
       time: new Date().toISOString().slice(0, 10),
       open,
@@ -129,13 +129,15 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       low,
       close,
     };
-    
-    setPortfolio(prev => {
-      const newHistory = [...prev.history, newHistoryPoint].slice(-30);
-      return { ...prev, history: newHistory };
-    });
-
-  }, [stocks, calculatePortfolioValue, portfolio.history]);
+  
+    // Only update if the time is different from the last point to avoid duplicates
+    if (newHistoryPoint.time !== lastPortfolioCandle.time) {
+      setPortfolio(prev => {
+        const newHistory = [...prev.history, newHistoryPoint].slice(-30);
+        return { ...prev, history: newHistory };
+      });
+    }
+  }, [stocks, calculatePortfolioValue]); // Removed portfolio.history from dependency array
 
   const addTransaction = (transaction: Omit<Transaction, 'id' | 'date'>) => {
     const newTransaction: Transaction = {
