@@ -6,7 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AreaChart, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+
+function Logo(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg 
+      {...props}
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    >
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+    </svg>
+  )
+}
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -30,11 +47,11 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-sm animate-fade-in-up">
+      <Card className="w-full max-w-sm animate-fade-in-up" style={{animationDuration: '1s'}}>
         <CardHeader className="text-center">
            <div className="flex items-center justify-center gap-2 mb-4">
              <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-               <AreaChart className="size-6" />
+               <Logo className="size-6" />
              </div>
              <h1 className="font-headline text-2xl font-semibold">TradeSim</h1>
            </div>

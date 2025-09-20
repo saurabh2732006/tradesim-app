@@ -14,7 +14,6 @@ import {
   Wallet,
   Newspaper,
   Github,
-  AreaChart,
   Target,
   ListOrdered,
   User,
@@ -23,6 +22,23 @@ import {
 import { useAuth } from "@/context/auth-context";
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from "@/components/theme-toggle";
+
+function Logo(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg 
+      {...props}
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    >
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+    </svg>
+  )
+}
 
 export function AppSidebar() {
   const { logout } = useAuth();
@@ -42,7 +58,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <div className="flex items-center gap-2">
           <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <AreaChart className="size-5" />
+            <Logo className="size-5" />
           </div>
           <h1 className="font-headline text-lg font-semibold">TradeSim</h1>
           <SidebarTrigger className="ml-auto" />
