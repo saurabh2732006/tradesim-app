@@ -58,3 +58,13 @@ export interface NewsArticle {
 export type CapitalAllocationStrategy = "conservative" | "moderate" | "aggressive";
 
 export type TradeType = "buy" | "sell";
+
+export interface AnalyzeNewsArticleInput {
+  headline: string;
+  summary: string;
+}
+
+export interface AnalyzeNewsArticleOutput {
+  sentiment: 'Positive' | 'Negative' | 'Neutral';
+  impact: string;
+}
