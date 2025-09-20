@@ -45,12 +45,12 @@ export function CandlestickChart({ data }: CandlestickChartProps) {
     });
 
     const candlestickSeries = chart.addCandlestickSeries({
-      upColor: isDarkMode ? "hsl(173 58% 39%)" : "hsl(166.2 76.7% 39.4%)",
-      downColor: isDarkMode ? "hsl(0 62.8% 30.6%)" : "hsl(0 84.2% 60.2%)",
-      borderDownColor: isDarkMode ? "hsl(0 62.8% 30.6%)" : "hsl(0 84.2% 60.2%)",
-      borderUpColor: isDarkMode ? "hsl(173 58% 39%)" : "hsl(166.2 76.7% 39.4%)",
-      wickDownColor: isDarkMode ? "hsl(0 62.8% 30.6%)" : "hsl(0 84.2% 60.2%)",
-      wickUpColor: isDarkMode ? "hsl(173 58% 39%)" : "hsl(166.2 76.7% 39.4%)",
+      upColor: isDarkMode ? "hsl(173, 58%, 39%)" : "hsl(166.2, 76.7%, 39.4%)",
+      downColor: isDarkMode ? "hsl(0, 62.8%, 30.6%)" : "hsl(0, 84.2%, 60.2%)",
+      borderDownColor: isDarkMode ? "hsl(0, 62.8%, 30.6%)" : "hsl(0, 84.2%, 60.2%)",
+      borderUpColor: isDarkMode ? "hsl(173, 58%, 39%)" : "hsl(166.2, 76.7%, 39.4%)",
+      wickDownColor: isDarkMode ? "hsl(0, 62.8%, 30.6%)" : "hsl(0, 84.2%, 60.2%)",
+      wickUpColor: isDarkMode ? "hsl(173, 58%, 39%)" : "hsl(166.2, 76.7%, 39.4%)",
     });
 
     const sortedData = [...data].sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
