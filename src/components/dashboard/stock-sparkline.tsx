@@ -1,67 +1,66 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Area, AreaChart } from "recharts"
-import { ChartContainer } from "@/components/ui/chart"
-import { Stock } from "@/lib/types"
+import { useEffect, useRef } from "react";
+import { createChart, ColorType, LineStyle } from "lightweight-charts";
+import { useTheme } from "next-themes";
+import type { CandlestickData } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils";
 
 interface StockSparklineProps {
-  stock: Stock;
+  data: CandlestickData[];
 }
 
-export function StockSparkline({ stock }: StockSparklineProps) {
-  const chartConfig = {
-    value: {
-      label: stock.ticker,
-      color: stock.change >= 0 ? "hsl(var(--chart-2))" : "hsl(var(--destructive))",
-    },
-  }
+export function StockSparkline({ data }: StockSparklineProps) {
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
 
-  const chartData = stock.history.map(point => ({
-    time: point.time,
-    value: point.value
-  }));
+  useEffect(() => {
+    if (!chartContainerRef.current || data.length === 0) return;
 
-  const min = Math.min(...chartData.map(d => d.value));
-  const max = Math.max(...chartData.map(d => d.value));
+    const isDarkMode = resolvedTheme === "dark";
+    const chart = createChart(chartContainerRef.current, {
+      width: 100,
+      height: 40,
+      layout: {
+        background: { type: ColorType.Solid, color: "transparent" },
+        textColor: isDarkMode ? "#D1D5DB" : "#374151",
+      },
+      grid: {
+        vertLines: { visible: false },
+        horzLines: { visible: false },
+      },
+      timeScale: {
+        visible: false,
+        borderVisible: false,
+      },
+      rightPriceScale: {
+        visible: false,
+        borderVisible: false,
+      },
+      handleScroll: false,
+      handleScale: false,
+    });
 
+    const isGain = data[data.length - 1].close >= data[0].close;
 
-  return (
-    <ChartContainer config={chartConfig} className="h-10 w-24">
-      <AreaChart
-        data={chartData}
-        margin={{
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-        }}
-      >
-        <defs>
-          <linearGradient id={`fill-${stock.ticker}`} x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="5%"
-              stopColor="var(--color-value)"
-              stopOpacity={0.4}
-            />
-            <stop
-              offset="95%"
-              stopColor="var(--color-value)"
-              stopOpacity={0.0}
-            />
-          </linearGradient>
-        </defs>
-        <Area
-          dataKey="value"
-          type="natural"
-          fill={`url(#fill-${stock.ticker})`}
-          stroke="var(--color-value)"
-          strokeWidth={2}
-          stackId="a"
-          dot={false}
-        />
-         <AreaChart accessibilityLayer data={chartData} />
-      </AreaChart>
-    </ChartContainer>
-  )
+    const areaSeries = chart.addAreaSeries({
+      lineColor: isGain ? "hsl(var(--chart-2))" : "hsl(var(--destructive))",
+      topColor: isGain ? "hsla(var(--chart-2), 0.4)" : "hsla(var(--destructive), 0.4)",
+      bottomColor: isGain ? "hsla(var(--chart-2), 0)" : "hsla(var(--destructive), 0)",
+      lineWidth: 2,
+      priceLineVisible: false,
+      lastValueVisible: false,
+    });
+    
+    const chartData = data.map(d => ({time: d.time, value: d.close}));
+
+    areaSeries.setData(chartData);
+    chart.timeScale().fitContent();
+
+    return () => {
+      chart.remove();
+    };
+  }, [data, resolvedTheme]);
+
+  return <div ref={chartContainerRef} className="h-10 w-24" />;
 }

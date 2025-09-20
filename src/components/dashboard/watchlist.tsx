@@ -77,7 +77,7 @@ export function Watchlist() {
                       <div className="text-xs">({isGain ? '+' : ''}{formatPercent(stock.changePercent)})</div>
                     </TableCell>
                     <TableCell>
-                      <StockSparkline stock={stock} />
+                      <StockSparkline data={stock.history} />
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" onClick={() => handleTradeClick(stock.ticker)}>

@@ -1,5 +1,13 @@
 import { FC } from 'react';
 
+export interface CandlestickData {
+  time: string; // "YYYY-MM-DD"
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+
 export interface Stock {
   ticker: string;
   name: string;
@@ -7,7 +15,7 @@ export interface Stock {
   change: number;
   changePercent: number;
   logo: FC<{ className?: string }>;
-  history: { time: string; value: number }[];
+  history: CandlestickData[];
 }
 
 export interface Holding {
@@ -33,7 +41,7 @@ export interface Transaction {
 export interface PortfolioData {
   cash: number;
   holdings: Holding[];
-  history: PortfolioHistoryPoint[];
+  history: CandlestickData[];
   transactions: Transaction[];
 }
 

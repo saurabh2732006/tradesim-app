@@ -1,7 +1,17 @@
 import type { Stock, PortfolioData, NewsArticle } from "@/lib/types";
 import { FC } from 'react';
 
-// Stock Logos for Indian Companies
+// Stock Logos
+const BullLogo: FC<{ className?: string }> = (props) => (
+  <svg {...props} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 8V6H9.5C8.12 6 7 7.12 7 8.5C7 9.88 8.12 11 9.5 11H12V13H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M9 16C9.82843 16 10.5 15.3284 10.5 14.5C10.5 13.6716 9.82843 13 9 13C8.17157 13 7.5 13.6716 7.5 14.5C7.5 15.3284 8.17157 16 9 16Z" fill="currentColor"/>
+    <path d="M15 16C15.8284 16 16.5 15.3284 16.5 14.5C16.5 13.6716 15.8284 13 15 13C14.1716 13 13.5 13.6716 13.5 14.5C13.5 15.3284 14.1716 16 15 16Z" fill="currentColor"/>
+    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2"/>
+    <path d="M16 8H18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M6 8H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
 const RelianceLogo: FC<{ className?: string }> = (props) => (
     <svg {...props} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#0033A0"/>
@@ -19,7 +29,6 @@ const RelianceLogo: FC<{ className?: string }> = (props) => (
         </defs>
     </svg>
 );
-
 const TcsLogo: FC<{ className?: string }> = (props) => (
     <svg {...props} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#4A4A4A"/>
@@ -28,7 +37,6 @@ const TcsLogo: FC<{ className?: string }> = (props) => (
         <path d="M9.5 16H14.5L12 13.5L9.5 16Z" fill="#58BBE3"/>
     </svg>
 );
-
 const HdfcLogo: FC<{ className?: string }> = (props) => (
     <svg {...props} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="24" height="24" fill="#004C8F"/>
@@ -36,14 +44,12 @@ const HdfcLogo: FC<{ className?: string }> = (props) => (
         <path d="M8 8H16V16H8V8Z" fill="#E40000"/>
     </svg>
 );
-
 const InfosysLogo: FC<{ className?: string }> = (props) => (
   <svg {...props} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z" fill="#0078C1"/>
     <path d="M11.232 7.095l-2.923.473L9.75 16.905l2.924-.473L11.232 7.095zM14.75 7.095l-2.923.473L13.27 16.905l2.923-.473L14.75 7.095z" fill="#FFF"/>
   </svg>
 );
-
 const IciciLogo: FC<{ className?: string }> = (props) => (
   <svg {...props} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M0 11.01V0h2.95l7.155 8.164L10.08 11.01H0zm24 1.98v11.01h-2.95L13.895 15.836 13.92 13h10.08z" fill="#EC6610"/>
@@ -51,25 +57,19 @@ const IciciLogo: FC<{ className?: string }> = (props) => (
   </svg>
 );
 
-
 export const initialStocks: Stock[] = [
-  { ticker: 'RELIANCE', name: 'Reliance Industries', price: 2850.55, change: 25.3, changePercent: 0.89, logo: RelianceLogo },
-  { ticker: 'TCS', name: 'Tata Consultancy', price: 3855.10, change: -12.75, changePercent: -0.33, logo: TcsLogo },
-  { ticker: 'HDFCBANK', name: 'HDFC Bank', price: 1530.80, change: 8.10, changePercent: 0.53, logo: HdfcLogo },
-  { ticker: 'INFY', name: 'Infosys', price: 1510.25, change: -5.40, changePercent: -0.36, logo: InfosysLogo },
-  { ticker: 'ICICIBANK', name: 'ICICI Bank', price: 1125.90, change: 15.20, changePercent: 1.37, logo: IciciLogo },
+  { ticker: 'RELIANCE', name: 'Reliance Industries', price: 2850.55, change: 25.3, changePercent: 0.89, logo: RelianceLogo, history: [] },
+  { ticker: 'TCS', name: 'Tata Consultancy', price: 3855.10, change: -12.75, changePercent: -0.33, logo: TcsLogo, history: [] },
+  { ticker: 'HDFCBANK', name: 'HDFC Bank', price: 1530.80, change: 8.10, changePercent: 0.53, logo: HdfcLogo, history: [] },
+  { ticker: 'INFY', name: 'Infosys', price: 1510.25, change: -5.40, changePercent: -0.36, logo: InfosysLogo, history: [] },
+  { ticker: 'ICICIBANK', name: 'ICICI Bank', price: 1125.90, change: 15.20, changePercent: 1.37, logo: IciciLogo, history: [] },
 ];
 
 const now = new Date();
 export const initialPortfolio: PortfolioData = {
   cash: 100000,
   holdings: [],
-  history: Array.from({ length: 30 }, (_, i) => {
-    const date = new Date(now);
-    date.setDate(now.getDate() - (29 - i));
-    const value = 100000 + Math.sin(i / 5) * 5000 + Math.random() * 2500 - 1250;
-    return { time: date.toISOString().slice(0, 10), value: parseFloat(value.toFixed(2)) };
-  }),
+  history: [],
   transactions: [],
 };
 

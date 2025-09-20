@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { initialStocks, initialPortfolio, initialNews } from '@/lib/data';
-import type { Stock, PortfolioData, Holding, NewsArticle, TradeType, Transaction } from '@/lib/types';
+import type { Stock, PortfolioData, Holding, NewsArticle, TradeType, Transaction, CandlestickData } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 
 interface PortfolioContextType {
@@ -10,7 +10,7 @@ interface PortfolioContextType {
   portfolio: PortfolioData;
   news: NewsArticle[];
   buyStock: (ticker: string, shares: number, price: number) => void;
-  sellStock: (ticker: string, shares: number, price: number) => void;
+  sellStock: (ticker:string, shares: number, price: number) => void;
   getHolding: (ticker: string) => Holding | undefined;
   calculatePortfolioValue: () => number;
   tradeDialogOpen: boolean;
@@ -23,18 +23,38 @@ interface PortfolioContextType {
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
-// Helper to generate initial history for a stock
-const generateStockHistory = (price: number) => {
+// Helper to generate initial OHLC history for a stock
+const generateStockHistory = (price: number): CandlestickData[] => {
   const now = new Date();
-  return Array.from({ length: 30 }, (_, i) => {
+  const history: CandlestickData[] = [];
+  let lastClose = price * (1 - (Math.random() - 0.5) * 0.2);
+
+  for (let i = 0; i < 30; i++) {
     const date = new Date(now);
     date.setDate(now.getDate() - (29 - i));
-    // Simulate some historical volatility
-    const value = price * (1 + (Math.sin(i / 3) * 0.05) + (Math.random() - 0.5) * 0.02);
-    return { time: date.toISOString().slice(0, 10), value: parseFloat(value.toFixed(2)) };
-  });
+    const time = date.toISOString().slice(0, 10);
+
+    const open = lastClose * (1 + (Math.random() - 0.5) * 0.02);
+    const close = open * (1 + (Math.random() - 0.5) * 0.03);
+    const high = Math.max(open, close) * (1 + Math.random() * 0.01);
+    const low = Math.min(open, close) * (1 - Math.random() * 0.01);
+    
+    history.push({ time, open, high, low, close });
+    lastClose = close;
+  }
+  return history;
 };
 
+// Helper to generate a new OHLC point
+const generateNewCandle = (lastCandle: CandlestickData): CandlestickData => {
+  const time = new Date().toISOString().slice(0, 10);
+  const open = lastCandle.close;
+  const close = open * (1 + (Math.random() - 0.5) * 0.03);
+  const high = Math.max(open, close) * (1 + Math.random() * 0.01);
+  const low = Math.min(open, close) * (1 - Math.random() * 0.01);
+
+  return { time, open, high, low, close };
+}
 
 export function PortfolioProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
@@ -42,7 +62,12 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     ...stock,
     history: generateStockHistory(stock.price),
   })));
-  const [portfolio, setPortfolio] = useState<PortfolioData>(initialPortfolio);
+  
+  const [portfolio, setPortfolio] = useState<PortfolioData>(() => {
+    const initialHistory = generateStockHistory(initialPortfolio.cash);
+    return { ...initialPortfolio, history: initialHistory };
+  });
+
   const news = initialNews;
 
   const [tradeDialogOpen, setTradeDialogOpen] = useState(false);
@@ -61,38 +86,24 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     return portfolio.cash + holdingsValue;
   }, [portfolio.cash, portfolio.holdings, stocks]);
   
-
   useEffect(() => {
     const interval = setInterval(() => {
       setStocks(prevStocks =>
         prevStocks.map(stock => {
-          // Fluctuate by up to 1.5%
-          const changePercent = (Math.random() - 0.5) * 0.015; // Reduced volatility
-          const change = stock.price * changePercent;
-          const newPrice = Math.max(0.01, stock.price + change);
-          
-          const newHistoryPoint = {
-             time: new Date().toISOString().slice(0, 10),
-             value: newPrice
-          };
+          const lastCandle = stock.history[stock.history.length - 1];
+          if (!lastCandle) return stock;
 
-          const newHistory = [...(stock.history || [])];
-          const lastEntry = newHistory[newHistory.length-1];
+          const newCandle = generateNewCandle(lastCandle);
+          const newPrice = newCandle.close;
 
-          // If the last entry is for the same day, update it. Otherwise, add a new one.
-          if (lastEntry && lastEntry.time === newHistoryPoint.time) {
-            newHistory[newHistory.length-1] = newHistoryPoint;
-          } else {
-             newHistory.push(newHistoryPoint);
-          }
-
+          const newHistory = [...stock.history, newCandle].slice(-30);
 
           return {
             ...stock,
             price: newPrice,
-            change: newPrice - (stock.history?.slice(-1)[0]?.value ?? stock.price),
-            changePercent: ((newPrice - (stock.history?.slice(-1)[0]?.value ?? stock.price)) / (stock.history?.slice(-1)[0]?.value ?? stock.price)) * 100,
-            history: newHistory.slice(-30) // Keep last 30 days
+            change: newPrice - lastCandle.close,
+            changePercent: ((newPrice - lastCandle.close) / lastCandle.close) * 100,
+            history: newHistory,
           };
         })
       );
@@ -102,28 +113,29 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    const lastPortfolioCandle = portfolio.history[portfolio.history.length - 1];
+    if (!lastPortfolioCandle) return;
+
     const portfolioValue = calculatePortfolioValue();
-    const now = new Date();
-    const newHistoryPoint = {
-      time: now.toISOString().slice(0, 10),
-      value: portfolioValue,
+    const open = lastPortfolioCandle.close;
+    const close = portfolioValue;
+    const high = Math.max(open, close) * (1 + Math.random() * 0.001);
+    const low = Math.min(open, close) * (1 - Math.random() * 0.001);
+
+    const newHistoryPoint: CandlestickData = {
+      time: new Date().toISOString().slice(0, 10),
+      open,
+      high,
+      low,
+      close,
     };
     
     setPortfolio(prev => {
-      const lastEntry = prev.history[prev.history.length-1];
-      if (lastEntry && lastEntry.time === newHistoryPoint.time) {
-        // update last entry
-        const newHistory = [...prev.history];
-        newHistory[newHistory.length-1] = newHistoryPoint;
-        return { ...prev, history: newHistory };
-      }
-      if (prev.history.length < 30) {
-        return { ...prev, history: [...prev.history, newHistoryPoint]};
-      }
-      return { ...prev, history: [...prev.history, newHistoryPoint].slice(-30)};
+      const newHistory = [...prev.history, newHistoryPoint].slice(-30);
+      return { ...prev, history: newHistory };
     });
 
-  }, [stocks, calculatePortfolioValue]);
+  }, [stocks, calculatePortfolioValue, portfolio.history]);
 
   const addTransaction = (transaction: Omit<Transaction, 'id' | 'date'>) => {
     const newTransaction: Transaction = {
