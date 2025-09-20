@@ -42,11 +42,14 @@ export function StockSparkline({ data }: StockSparklineProps) {
     });
 
     const isGain = data[data.length - 1].close >= data[0].close;
+    
+    const upColor = isDarkMode ? "hsl(173 58% 39%)" : "hsl(166.2 76.7% 39.4%)";
+    const downColor = isDarkMode ? "hsl(0 62.8% 30.6%)" : "hsl(0 84.2% 60.2%)";
 
     const areaSeries = chart.addAreaSeries({
-      lineColor: isGain ? "hsl(var(--chart-2))" : "hsl(var(--destructive))",
-      topColor: isGain ? "hsla(var(--chart-2), 0.4)" : "hsla(var(--destructive), 0.4)",
-      bottomColor: isGain ? "hsla(var(--chart-2), 0)" : "hsla(var(--destructive), 0)",
+      lineColor: isGain ? upColor : downColor,
+      topColor: isGain ? upColor.replace(")", ", 0.4)") : downColor.replace(")", ", 0.4)"),
+      bottomColor: isGain ? upColor.replace(")", ", 0)") : downColor.replace(")", ", 0)"),
       lineWidth: 2,
       priceLineVisible: false,
       lastValueVisible: false,
