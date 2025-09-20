@@ -39,8 +39,9 @@ export function StockSparkline({ data }: StockSparklineProps) {
       handleScroll: false,
       handleScale: false,
     });
-
-    const isGain = data[data.length - 1].close >= data[0].close;
+    
+    const sortedData = [...data].sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    const isGain = sortedData[sortedData.length - 1].close >= sortedData[0].close;
     
     const upColor = isDarkMode ? "#10B981" : "#16A34A";
     const downColor = isDarkMode ? "#EF4444" : "#DC2626";
@@ -54,7 +55,7 @@ export function StockSparkline({ data }: StockSparklineProps) {
       lastValueVisible: false,
     });
     
-    const chartData = data.map(d => ({time: d.time, value: d.close}));
+    const chartData = sortedData.map(d => ({time: d.time, value: d.close}));
 
     areaSeries.setData(chartData);
     chart.timeScale().fitContent();
