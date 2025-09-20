@@ -45,15 +45,20 @@ export function CandlestickChart({ data }: CandlestickChartProps) {
     });
 
     const candlestickSeries = chart.addCandlestickSeries({
-      upColor: isDarkMode ? "#10B981" : "#16A34A",
-      downColor: isDarkMode ? "#EF4444" : "#DC2626",
-      borderDownColor: isDarkMode ? "#EF4444" : "#DC2626",
-      borderUpColor: isDarkMode ? "#10B981" : "#16A34A",
-      wickDownColor: isDarkMode ? "#EF4444" : "#DC2626",
-      wickUpColor: isDarkMode ? "#10B981" : "#16A34A",
+      upColor: "#16A34A",
+      downColor: "#DC2626",
+      borderDownColor: "#DC2626",
+      borderUpColor: "#16A34A",
+      wickDownColor: "#DC2626",
+      wickUpColor: "#16A34A",
     });
 
-    const sortedData = [...data].sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    const sortedData = [...data]
+      .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
+      .filter((item, index, self) => 
+        index === 0 || self[index - 1].time !== item.time
+      );
+      
     candlestickSeries.setData(sortedData);
 
     chart.timeScale().fitContent();

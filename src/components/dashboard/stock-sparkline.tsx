@@ -40,16 +40,21 @@ export function StockSparkline({ data }: StockSparklineProps) {
       handleScale: false,
     });
     
-    const sortedData = [...data].sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
-    const isGain = sortedData[sortedData.length - 1].close >= sortedData[0].close;
+    const sortedData = [...data]
+      .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
+      .filter((item, index, self) => 
+        index === 0 || self[index - 1].time !== item.time
+      );
+
+    const isGain = sortedData.length > 1 ? sortedData[sortedData.length - 1].close >= sortedData[0].close : true;
     
-    const upColor = isDarkMode ? "#10B981" : "#16A34A";
-    const downColor = isDarkMode ? "#EF4444" : "#DC2626";
+    const upColor = "#16A34A";
+    const downColor = "#DC2626";
 
     const areaSeries = chart.addAreaSeries({
       lineColor: isGain ? upColor : downColor,
-      topColor: isGain ? "rgba(16, 185, 129, 0.4)" : "rgba(239, 68, 68, 0.4)",
-      bottomColor: isGain ? "rgba(16, 185, 129, 0)" : "rgba(239, 68, 68, 0)",
+      topColor: isGain ? "rgba(22, 163, 74, 0.4)" : "rgba(220, 38, 38, 0.4)",
+      bottomColor: isGain ? "rgba(22, 163, 74, 0)" : "rgba(220, 38, 38, 0)",
       lineWidth: 2,
       priceLineVisible: false,
       lastValueVisible: false,
