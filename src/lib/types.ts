@@ -59,6 +59,19 @@ export type CapitalAllocationStrategy = "conservative" | "moderate" | "aggressiv
 
 export type TradeType = "buy" | "sell";
 
+export interface SuggestOrderSizeInput {
+  stockTicker: string;
+  accountBalance: number;
+  riskFactor: number;
+  stockPrice: number;
+  capitalAllocationStrategy: CapitalAllocationStrategy;
+}
+
+export interface SuggestOrderSizeOutput {
+  orderSize: number;
+  reasoning: string;
+}
+
 export interface AnalyzeNewsArticleInput {
   headline: string;
   summary: string;

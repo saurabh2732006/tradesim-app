@@ -185,8 +185,7 @@ export function TradeDialog() {
               <AlertDescription className="space-y-2">
                 <p><strong>Order Size:</strong> {suggestion.orderSize} shares</p>
                 <p><strong>Reasoning:</strong> {suggestion.reasoning}</p>
-                <Button variant="link" size="sm" className="p-0 h-auto" onClick={() => setValue('shares', suggestion.orderSize)}>Use this suggestion</Button>
-              </AlertDescription>
+                <Button variant="link" size="sm" className="p-0 h-auto" onClick={() => setValue('shares', suggestion.orderSize)}>Use this suggestion</Button>              </AlertDescription>
             </Alert>
           )}
         </div>
